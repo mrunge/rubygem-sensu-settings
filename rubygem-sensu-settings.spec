@@ -2,7 +2,7 @@
 %global gem_name sensu-settings
 
 Name:           rubygem-%{gem_name}
-Version:        3.3.0
+Version:        3.4.0
 Release:        1%{?dist}
 Summary:        The Sensu settings library, loader and validator
 Group:          Development/Languages
@@ -17,9 +17,9 @@ BuildRequires:  rubygem(rspec2)
 %else
 BuildRequires:  rubygem(rspec)
 %endif
-BuildRequires:  rubygem(multi_json)
+BuildRequires:  rubygem(sensu-json)
 
-Requires:       rubygem(multi_json)
+Requires:       rubygem(sensu-json)
 
 BuildArch: noarch
 %if 0%{?rhel} > 0
@@ -100,6 +100,9 @@ popd
 %{gem_instdir}/spec
 
 %changelog
+* Mon May 09 2016 Martin Mágr <mmagr@redhat.com> -  3.4.0-1
+- Updated to upstream version 3.4.0
+
 * Mon Feb 29 2016 Martin Mágr <mmagr@redhat.com> -  3.3.0-1
 - Updated to upstream version 3.3.0
 
