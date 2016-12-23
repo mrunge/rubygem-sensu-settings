@@ -2,13 +2,15 @@
 %global gem_name sensu-settings
 
 Name:           rubygem-%{gem_name}
-Version:        3.4.0
+Version:        9.6.0
 Release:        1%{?dist}
 Summary:        The Sensu settings library, loader and validator
 Group:          Development/Languages
 License:        MIT
 URL:            https://github.com/sensu/sensu-settings
 Source0:        https://rubygems.org/gems/%{gem_name}-%{version}.gem
+Source1:        https://github.com/sensu/%{gem_name}/archive/v%{version}.tar.gz#/%{gem_name}-%{version}.tar.gz
+
 BuildRequires:  ruby(release)
 BuildRequires:  rubygems-devel
 BuildRequires:  ruby
@@ -41,9 +43,7 @@ Documentation for %{name}.
 
 %prep
 gem unpack %{SOURCE0}
-
 %setup -q -D -T -n  %{gem_name}-%{version}
-
 gem spec %{SOURCE0} -l --ruby > %{gem_name}.gemspec
 
 %build
@@ -59,22 +59,22 @@ mkdir -p %{buildroot}%{gem_dir}
 cp -a .%{gem_dir}/* \
         %{buildroot}%{gem_dir}/
 
+install -d -p %{_builddir}%{gem_instdir}
+tar -xvzf %{SOURCE1} -C %{_builddir}/%{gem_name}-%{version}/%{gem_instdir} --strip-components=1 %{gem_name}-%{version}/spec
+
 rm -f %{buildroot}%{gem_instdir}/{.gitignore,.travis.yml}
 
 
 # Run the test suite
 %check
 pushd .%{gem_instdir}
-sed -i /codeclimate-test-reporter/d spec/helpers.rb
-sed -i /CodeClimate::TestReporter.start/d spec/helpers.rb
-
 # Add missing symlinks, which break unit tests,
 # see https://github.com/sensu/sensu-settings/issues/25
 pushd ./spec/assets/conf.d
 ln -s ../alternative/conf.d/ alternative
 popd
 pushd ./spec/assets/alternative/conf.d
-ln -s ../conf.d loop
+#ln -s ../conf.d loop
 popd
 
 %if 0%{?fedora} > 21
@@ -91,15 +91,15 @@ popd
 %{gem_spec}
 %{gem_instdir}/LICENSE.txt
 %{gem_instdir}/README.md
-%{gem_instdir}/Gemfile
 
 %files doc
 %doc %{gem_docdir}
-%{gem_instdir}/Rakefile
 %{gem_instdir}/%{gem_name}.gemspec
-%{gem_instdir}/spec
 
 %changelog
+* Fri Dec 23 2016 Martin Mágr <mmagr@redhat.com> -  9.6.0-1
+- Updated to latest upstream version
+
 * Mon May 09 2016 Martin Mágr <mmagr@redhat.com> -  3.4.0-1
 - Updated to upstream version 3.4.0
 
