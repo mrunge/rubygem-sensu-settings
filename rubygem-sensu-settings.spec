@@ -43,7 +43,11 @@ Documentation for %{name}.
 
 %prep
 gem unpack %{SOURCE0}
+%if 0%{?dlrn} > 0
+%setup -q -D -T -n  %{dlrn_nvr}
+%else
 %setup -q -D -T -n  %{gem_name}-%{version}
+%endif
 gem spec %{SOURCE0} -l --ruby > %{gem_name}.gemspec
 
 %build
@@ -60,7 +64,11 @@ cp -a .%{gem_dir}/* \
         %{buildroot}%{gem_dir}/
 
 install -d -p %{_builddir}%{gem_instdir}
+%if 0%{?dlrn} > 0
+tar -xvzf %{SOURCE1} -C %{_builddir}/%{dlrn_nvr}/%{gem_instdir} --strip-components=1 %{gem_name}-%{version}/spec
+%else
 tar -xvzf %{SOURCE1} -C %{_builddir}/%{gem_name}-%{version}/%{gem_instdir} --strip-components=1 %{gem_name}-%{version}/spec
+%endif
 
 rm -f %{buildroot}%{gem_instdir}/{.gitignore,.travis.yml}
 
