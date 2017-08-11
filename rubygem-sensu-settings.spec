@@ -20,8 +20,10 @@ BuildRequires:  rubygem(rspec2)
 BuildRequires:  rubygem(rspec)
 %endif
 BuildRequires:  rubygem(sensu-json)
+BuildRequires:  rubygem(parse-cron)
 
 Requires:       rubygem(sensu-json)
+Requires:       rubygem(parse-cron)
 
 BuildArch: noarch
 %if 0%{?rhel} > 0
